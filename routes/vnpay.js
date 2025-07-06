@@ -50,7 +50,7 @@ router.post('/create_payment_url', function (req, res, next) {
     let tmnCode = config.get('vnp_TmnCode');
     let secretKey = config.get('vnp_HashSecret');
     let vnpUrl = config.get('vnp_Url');
-    let returnUrl = config.get('vnp_ReturnUrl');
+    let returnUrl = `${process.env.BACKEND_URL}/vnpay/vnpay_return`;
     let orderId = req.body.orderId;
     let amount = req.body.amount;
     let bankCode = req.body.bankCode || "NCB";
@@ -86,6 +86,7 @@ router.post('/create_payment_url', function (req, res, next) {
     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+    console.log('returnUrl:', returnUrl);
     res.json({ code: '00', message: 'success', data: vnpUrl });
 });
 
@@ -116,7 +117,7 @@ router.get('/vnpay_return', async function (req, res, next) {
         order.paymentInfo = vnp_Params; // lưu toàn bộ thông tin thanh toán
         order.status = vnp_Params['vnp_ResponseCode'] === '00' ? 'paid' : 'failed';
         await order.save();
-        res.redirect(`http://localhost:5173/payment-success?vnp_ResponseCode=${vnp_Params['vnp_ResponseCode']}`);
+        res.redirect(`${process.env.FRONTEND_URL}/payment-success?vnp_ResponseCode=${vnp_Params['vnp_ResponseCode']}`);
     } else{
         res.render('success', {code: '97'})
     }

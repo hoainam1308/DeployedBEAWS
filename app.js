@@ -3,6 +3,9 @@ var path = require('path');
 var mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const session = require('express-session');
+const { Issuer, generators } = require('openid-client');
+const { checkAuth } = require('./middlewares/auth');
 require('dotenv').config();
 
 const dbURI = process.env.DB_URI ;
@@ -28,6 +31,76 @@ app.use(cors({
   origin: frontendUrl,
   credentials: true
 }));
+
+// let client;
+// // Initialize OpenID Client
+// async function initializeClient() {
+//     const issuer = await Issuer.discover('https://cognito-idp.us-east-1.amazonaws.com/us-east-1_DAP3gJdIm');
+//     client = new issuer.Client({
+//         client_id: '3v5gq6j34837lgtv9ae22qhb6m',
+//         client_secret: '1nq72t1not5unamkspm64ul2rraqsr08g75okjj9ld519okm275',
+//         redirect_uris: ['http://localhost:3000/callback'],
+//         response_types: ['code']
+//     });
+// };
+// initializeClient().catch(console.error);
+
+// app.use(session({
+//     secret: 'some secret',
+//     resave: false,
+//     saveUninitialized: false
+// }));
+
+// app.get('/', checkAuth, (req, res) => {
+//     res.render('home', {
+//         isAuthenticated: req.isAuthenticated,
+//         userInfo: req.session.userInfo
+//     });
+// });
+
+// app.get('/login', (req, res) => {
+//     const nonce = generators.nonce();
+//     const state = generators.state();
+
+//     req.session.nonce = nonce;
+//     req.session.state = state;
+
+//     const authUrl = client.authorizationUrl({
+//         scope: 'phone openid email',
+//         state: state,
+//         nonce: nonce,
+//     });
+
+//     res.redirect(authUrl);
+// });
+
+// app.get('callback', async (req, res) => {
+//     try {
+//         const params = client.callbackParams(req);
+//         const tokenSet = await client.callback(
+//             'http://localhost:3000/callback',
+//             params,
+//             {
+//                 nonce: req.session.nonce,
+//                 state: req.session.state
+//             }
+//         );
+
+//         const userInfo = await client.userinfo(tokenSet.access_token);
+//         req.session.userInfo = userInfo;
+
+//         res.redirect('/');
+//     } catch (err) {
+//         console.error('Callback error:', err);
+//         res.redirect('/');
+//     }
+// });
+
+// app.get('/logout', (req, res) => {
+//     req.session.destroy();
+//     const logoutUrl = `https://<user pool domain>/logout?client_id=3v5gq6j34837lgtv9ae22qhb6m&logout_uri=<logout uri>`;
+//     res.redirect(logoutUrl);
+// });
 
 app.use('/', indexRouter);
 app.use('/auths', require('./routes/auths')); // Ensure this line is added to use the auths route

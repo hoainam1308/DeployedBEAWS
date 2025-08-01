@@ -13,7 +13,7 @@ const createUser = async (userData) => {
     try {
         const role = await getRoleByName("USER");
         console.log('Role found:', role); // <--- Thêm dòng này để kiểm tra role
-        const user = new User({username : userData.username, email: userData.email, password: userData.password});
+        const user = new User({username : userData.username, email: userData.email, password: userData.password, role: role._id});
         await user.save();
         return user;
     } catch (error) {

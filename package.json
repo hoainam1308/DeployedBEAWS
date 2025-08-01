@@ -15,6 +15,7 @@
     "debug": "~2.6.9",
     "dotenv": "^16.6.0",
     "express": "~4.16.1",
+    "express-session": "^1.18.1",
     "google-auth-library": "^10.1.0",
     "jade": "^1.11.0",
     "jquery": "^3.7.1",
@@ -24,6 +25,7 @@
     "morgan": "~1.9.1",
     "multer": "^2.0.1",
     "nodemon": "^3.1.9",
+    "openid-client": "^6.6.2",
     "request": "^2.88.2",
     "slugify": "^1.6.6"
   }
